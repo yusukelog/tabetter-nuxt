@@ -15,7 +15,6 @@
                 clearable
                 outlined
               ></v-textarea>
-              {{ foods }}
             </v-card-text>
             <v-card-title>
               カテゴリー
@@ -27,8 +26,16 @@
               </v-radio-group>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="primary" depressed>登録する</v-btn>
+              <v-btn color="primary" depressed @click="createRecord">
+                登録する
+              </v-btn>
             </v-card-actions>
+            <v-card-title>
+              たべたもの
+            </v-card-title>
+            <v-card-text>
+              {{ foods }}
+            </v-card-text>
           </v-form>
         </v-card>
       </v-col>
@@ -62,11 +69,32 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
       foods: '',
       items: ['朝ごはん', '昼ごはん', '夜ごはん', 'おやつ']
+    }
+  },
+  methods: {
+    async createRecord() {
+      try {
+        const response = await axios.post(
+          'https://firestore.googleapis.com/v1/projects/tabetter-bc20e/databases/(default)/documents/records',
+          {
+            fields: {
+              foods: {
+                stringValue: this.foods
+              }
+            }
+          }
+        )
+        console.log(response)
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }
