@@ -8,7 +8,7 @@
       </v-btn>
     </v-app-bar>
     <v-content>
-      <v-container fluid>
+      <v-container>
         <nuxt />
       </v-container>
     </v-content>
@@ -20,7 +20,7 @@
               mdi-repeat
             </v-icon>
           </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
+          <v-list-item-title>ログアウト</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
