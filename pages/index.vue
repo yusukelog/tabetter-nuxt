@@ -9,7 +9,7 @@
             </v-card-title>
             <v-card-text>
               <v-textarea
-                v-model="foods"
+                v-model="entryFoods"
                 name="foods"
                 auto-grow
                 clearable
@@ -25,16 +25,20 @@
                 <v-radio label="昼ごはん" value="category-2"></v-radio>
               </v-radio-group>
             </v-card-text>
-            <v-card-actions>
+            <v-card-text>
               <v-btn color="primary" depressed @click="createRecord">
                 登録する
               </v-btn>
-            </v-card-actions>
+            </v-card-text>
             <v-card-title>
-              たべたもの
+              たべたもの履歴
             </v-card-title>
             <v-card-text>
-              {{ foods }}
+              <ul>
+                <li v-for="food in recordFoods" :key="food.name">
+                  {{ food.fields.foods.stringValue }}
+                </li>
+              </ul>
             </v-card-text>
           </v-form>
         </v-card>
@@ -58,9 +62,9 @@
                 multiple
               ></v-select>
             </v-card-text>
-            <v-card-actions>
+            <v-card-text>
               <v-btn color="primary" depressed>検索する</v-btn>
-            </v-card-actions>
+            </v-card-text>
           </v-form>
         </v-card>
       </v-col>
@@ -74,24 +78,38 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      foods: '',
+      // たべたもの
+      entryFoods: '',
+      // たべたもの履歴
+      recordFoods: '',
       items: ['朝ごはん', '昼ごはん', '夜ごはん', 'おやつ']
     }
   },
+  created() {
+    this.getRecods()
+  },
   methods: {
+    async getRecods() {
+      const response = await axios.get(
+        'https://firestore.googleapis.com/v1/projects/tabetter-bc20e/databases/(default)/documents/records'
+      )
+      this.recordFoods = response.data.documents
+    },
     async createRecord() {
       try {
-        const response = await axios.post(
+        await axios.post(
           'https://firestore.googleapis.com/v1/projects/tabetter-bc20e/databases/(default)/documents/records',
           {
             fields: {
               foods: {
-                stringValue: this.foods
+                stringValue: this.entryFoods
               }
             }
           }
         )
-        console.log(response)
+
+        this.getRecods()
+        this.entryFoods = ''
       } catch (e) {
         console.log(e)
       }

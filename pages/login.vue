@@ -6,8 +6,8 @@
           <v-card-title class="justify-center">
             ログイン
           </v-card-title>
-          <v-card-text>
-            <v-form>
+          <v-form>
+            <v-card-text>
               <v-text-field
                 label="メールアドレス"
                 name="email"
@@ -20,11 +20,11 @@
                 prepend-icon="mdi-lock"
                 type="password"
               />
-            </v-form>
-          </v-card-text>
-          <v-card-actions class="justify-center">
-            <v-btn color="primary" depressed>ログイン</v-btn>
-          </v-card-actions>
+            </v-card-text>
+            <v-card-text align="center">
+              <v-btn color="primary" depressed>ログイン</v-btn>
+            </v-card-text>
+          </v-form>
         </v-card>
       </v-col>
     </v-row>
