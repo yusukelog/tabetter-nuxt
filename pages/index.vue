@@ -35,8 +35,8 @@
             </v-card-title>
             <v-card-text>
               <ul>
-                <li v-for="food in recordFoods" :key="food.name">
-                  {{ food.fields.foods.stringValue }}
+                <li v-for="item in recordFoods" :key="item.foods">
+                  {{ item.foods }}
                 </li>
               </ul>
             </v-card-text>
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import firebase from '~/plugins/firebase.js'
 
 export default {
   data() {
@@ -81,7 +81,7 @@ export default {
       // たべたもの
       entryFoods: '',
       // たべたもの履歴
-      recordFoods: '',
+      recordFoods: [],
       items: ['朝ごはん', '昼ごはん', '夜ごはん', 'おやつ']
     }
   },
@@ -90,24 +90,27 @@ export default {
   },
   methods: {
     async getRecods() {
-      const response = await axios.get(
-        'https://firestore.googleapis.com/v1/projects/tabetter-bc20e/databases/(default)/documents/records'
-      )
-      this.recordFoods = response.data.documents
+      this.recordFoods = []
+      const response = await firebase
+        .firestore()
+        .collection('records')
+        .orderBy('upDate', 'desc')
+        .get()
+      response.forEach((doc) => {
+        this.recordFoods.push(doc.data())
+      })
     },
     async createRecord() {
       try {
-        await axios.post(
-          'https://firestore.googleapis.com/v1/projects/tabetter-bc20e/databases/(default)/documents/records',
-          {
-            fields: {
-              foods: {
-                stringValue: this.entryFoods
-              }
-            }
-          }
-        )
-
+        await firebase
+          .firestore()
+          .collection('records')
+          .add({
+            foods: this.entryFoods,
+            upDate: firebase.firestore.Timestamp.fromDate(
+              new Date('December 10, 1815')
+            )
+          })
         this.getRecods()
         this.entryFoods = ''
       } catch (e) {
