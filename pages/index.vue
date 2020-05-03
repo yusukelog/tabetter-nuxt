@@ -35,8 +35,8 @@
             </v-card-title>
             <v-card-text>
               <ul>
-                <li v-for="item in recordFoods" :key="item.foods">
-                  {{ item.foods }}
+                <li v-for="item in recordFoods" :key="item.food">
+                  {{ item.food }}
                 </li>
               </ul>
             </v-card-text>
@@ -106,10 +106,8 @@ export default {
           .firestore()
           .collection('records')
           .add({
-            foods: this.entryFoods,
-            upDate: firebase.firestore.Timestamp.fromDate(
-              new Date('December 10, 1815')
-            )
+            food: this.entryFoods,
+            upDate: firebase.firestore.Timestamp.fromDate(new Date())
           })
         this.getRecods()
         this.entryFoods = ''
