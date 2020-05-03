@@ -24,7 +24,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-footer :fixed="fixed" color="primary" dark app>
+    <v-footer :absolute="absolute" color="primary" dark app>
       <v-col class="text-center" cols="12">
         &copy; {{ new Date().getFullYear() }} — <strong>Tabetter</strong>
       </v-col>
@@ -36,7 +36,7 @@
 export default {
   data() {
     return {
-      fixed: false,
+      absolute: true,
       miniVariant: false,
       right: true,
       rightDrawer: false,
