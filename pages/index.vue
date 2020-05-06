@@ -7,19 +7,18 @@
             たべたもの
           </v-card-title>
           <v-card-text>
-            <v-textarea
+            <v-text-field
               v-model="entryFoods"
               name="foods"
-              auto-grow
-              clearable
+              type="text"
               outlined
-            ></v-textarea>
+            />
           </v-card-text>
           <v-card-title>
             カテゴリー
           </v-card-title>
           <v-card-text>
-            <v-radio-group row>
+            <v-radio-group row class="ma-0">
               <v-radio label="朝ごはん" value="category-1"></v-radio>
               <v-radio label="昼ごはん" value="category-2"></v-radio>
             </v-radio-group>
@@ -36,18 +35,45 @@
           たべたもの履歴
         </v-card-title>
         <v-card-text v-if="!progressCircular">
-          <ul>
-            <li v-for="item in recordFoods" :key="item.food">
-              {{ item.food }}
-            </li>
-          </ul>
+          <div class="pannel">
+            <v-card-subtitle class="border pa-2 grey darken-2">
+              <v-icon class="mr-1" dark dense>mdi-calendar-month</v-icon>
+              <span class="font-weight-bold white--text">2020年01月08日</span>
+            </v-card-subtitle>
+            <div class="px-5 py-4">
+              <div class="d-flex align-center">
+                <div class="mr-4 d-flex">
+                  <v-icon class="mr-1" small>mdi-clock-outline</v-icon>
+                  <span>12:00</span>
+                </div>
+                <div class="d-flex">
+                  <v-icon class="mr-1" small>mdi-tag</v-icon>
+                  <span>昼ごはん</span>
+                </div>
+                <v-spacer></v-spacer>
+                <div>
+                  <v-btn color="primary" small depressed>
+                    編集する
+                  </v-btn>
+                </div>
+              </div>
+              <!-- <div class="mt-5">
+                <div v-for="food in recordFoods" :key="food">
+                  {{ food }}
+                </div>
+              </div> -->
+            </div>
+          </div>
         </v-card-text>
         <v-card-text v-if="progressCircular" algin="center">
           <v-progress-circular
             indeterminate
-            color="amber"
+            color="primary"
           ></v-progress-circular>
         </v-card-text>
+      </v-card>
+      <v-card flat align="center" class="mt-5">
+        <v-btn dark color="grey darken-2" depressed> 全ての履歴を見る </v-btn>
       </v-card>
     </v-col>
     <v-col cols="12" sm="4">
@@ -83,7 +109,7 @@ export default {
       // たべたもの
       entryFoods: '',
       // たべたもの履歴
-      recordFoods: [],
+      recordFoods: '',
       items: ['朝ごはん', '昼ごはん', '夜ごはん', 'おやつ'],
       // プログレスバー
       progressCircular: false
@@ -96,14 +122,26 @@ export default {
     async getRecods() {
       this.progressCircular = true
       this.recordFoods = []
-      const response = await firebase
+      const posts = await firebase
         .firestore()
-        .collection('records')
-        .orderBy('upDate', 'desc')
+        .doc('posts/0Z7rDdTqwfc0xDjl9sm3')
         .get()
-      response.forEach((doc) => {
-        this.recordFoods.push(doc.data())
+      const user = await posts.get('userRef').get()
+      const postRef = firebase.firestore().doc('posts/0Z7rDdTqwfc0xDjl9sm3')
+      const logs = await firebase
+        .firestore()
+        .collectionGroup('logs')
+        .where('postRef', '==', postRef)
+        .get()
+      logs.forEach((doc) => {
+        console.log(doc.data())
       })
+      const res = {
+        user: user.id,
+        createdAt: posts.get('createdAt'),
+        foods: posts.get('foods')
+      }
+      console.log(res)
       this.progressCircular = false
     },
     async createRecord() {
@@ -124,3 +162,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.pannel {
+  border: 1px solid #616161;
+}
+</style>
