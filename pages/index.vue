@@ -124,24 +124,9 @@ export default {
       this.recordFoods = []
       const posts = await firebase
         .firestore()
-        .doc('posts/0Z7rDdTqwfc0xDjl9sm3')
+        .doc('posts/0Z7rDdTqwfc0xDjl9sm3/detail/lk7oBLYoZtfrsBwqO5st')
         .get()
-      const user = await posts.get('userRef').get()
-      const postRef = firebase.firestore().doc('posts/0Z7rDdTqwfc0xDjl9sm3')
-      const logs = await firebase
-        .firestore()
-        .collectionGroup('logs')
-        .where('postRef', '==', postRef)
-        .get()
-      logs.forEach((doc) => {
-        console.log(doc.data())
-      })
-      const res = {
-        user: user.id,
-        createdAt: posts.get('createdAt'),
-        foods: posts.get('foods')
-      }
-      console.log(res)
+      console.log(posts.data())
       this.progressCircular = false
     },
     async createRecord() {
