@@ -120,13 +120,14 @@ export default {
   },
   methods: {
     async getRecods() {
-      this.progressCircular = true
-      this.recordFoods = []
       const posts = await firebase
         .firestore()
-        .doc('posts/0Z7rDdTqwfc0xDjl9sm3/detail/lk7oBLYoZtfrsBwqO5st')
+        .collectionGroup('posts')
         .get()
-      console.log(posts.data())
+      posts.forEach((doc) => {
+        console.log(doc.data())
+      })
+
       this.progressCircular = false
     },
     async createRecord() {
